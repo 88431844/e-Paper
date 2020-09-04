@@ -177,34 +177,73 @@ class EPD:
 
         self.UpdateDisplay()
 
-        # if self.width%8 == 0:
-        # linewidth = int(self.width/8)
-        # else:
-        # linewidth = int(self.width/8) + 1
-        #
-        # self.send_command(0x24)
-        # for j in range(0, self.height):
-        #     for i in range(0, linewidth):
-        #         self.send_data(image[i + j * linewidth])
-        # self.TurnOnDisplay()
+    def displayRed(self, imagered):
+        #done
+        self.send_command(0x26)
+        for i in range(0, int(self.width * self.height / 8)):
+            self.send_data(imagered[i])
+
+        self.UpdateDisplay()
+
+    def displayBlack(self, imageblack):
+        #done
+        self.send_command(0x24)
+        for i in range(0, int(self.width * self.height / 8)):
+            self.send_data(imageblack[i])
+
+        self.UpdateDisplay()
+
+    def displayPartialRed(self, image):
+        #done
+        if self.width%8 == 0:
+            linewidth = int(self.width/8)
+        else:
+            linewidth = int(self.width/8) + 1
+
+        self.send_command(0x26)
+        for j in range(0, self.height):
+            for i in range(0, linewidth):
+                self.send_data(image[i + j * linewidth])
+
+        self.UpdateDisplay()
+
+    def displayPartialBlack(self, image):
+        #done
+        if self.width%8 == 0:
+            linewidth = int(self.width/8)
+        else:
+            linewidth = int(self.width/8) + 1
+
+        self.send_command(0x24)
+        for j in range(0, self.height):
+            for i in range(0, linewidth):
+                self.send_data(image[i + j * linewidth])
+
+        self.UpdateDisplay()
 
     def Clear(self):
-        self.send_command(0x10)
+        #done
+        # 清空黑色
+        self.send_command(0x24)
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(0xFF)
 
-        self.send_command(0x13)
+        # 清空红色
+        self.send_command(0x26)
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(0xFF)
 
-        self.send_command(0x12)
-        self.ReadBusy()
+        self.UpdateDisplay()
 
     def sleep(self):
-        self.send_command(0x02)  # POWER_OFF
-        self.ReadBusy()
-        self.send_command(0x07)  # DEEP_SLEEP
-        self.send_data(0xA5)  # check code
+        #done
+        self.send_command(0x22) #POWER OFF
+        self.send_data(0xC3)
+        self.send_command(0x20)
+
+        self.send_command(0x10) #enter deep sleep
+        self.send_data(0x01)
+        epdconfig.delay_ms(100)
 
         epdconfig.module_exit()
 
