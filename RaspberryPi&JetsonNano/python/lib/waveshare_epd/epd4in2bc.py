@@ -223,12 +223,12 @@ class EPD:
 
     def Clear(self):
         #done
-        # 清空黑色
+        #清空黑色
         self.send_command(0x24)
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(0xFF)
 
-        # 清空红色
+        #清空红色
         self.send_command(0x26)
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(0xFF)
