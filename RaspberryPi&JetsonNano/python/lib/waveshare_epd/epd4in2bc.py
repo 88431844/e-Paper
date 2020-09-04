@@ -166,16 +166,27 @@ class EPD:
         return buf
 
     def display(self, imageblack, imagered):
-        self.send_command(0x10)
+        #done
+        self.send_command(0x24)
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(imageblack[i])
 
-        self.send_command(0x13)
+        self.send_command(0x26)
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(imagered[i])
 
-        self.send_command(0x12)
-        self.ReadBusy()
+        self.UpdateDisplay()
+
+        # if self.width%8 == 0:
+        # linewidth = int(self.width/8)
+        # else:
+        # linewidth = int(self.width/8) + 1
+        #
+        # self.send_command(0x24)
+        # for j in range(0, self.height):
+        #     for i in range(0, linewidth):
+        #         self.send_data(image[i + j * linewidth])
+        # self.TurnOnDisplay()
 
     def Clear(self):
         self.send_command(0x10)
@@ -196,4 +207,11 @@ class EPD:
         self.send_data(0xA5)  # check code
 
         epdconfig.module_exit()
+
+    def UpdateDisplay(self):
+        #done
+        self.send_command(0x22)
+        self.send_data(0xC7)
+        self.send_command(0x20)
+        self.ReadBusy()
 ### END OF FILE ###
