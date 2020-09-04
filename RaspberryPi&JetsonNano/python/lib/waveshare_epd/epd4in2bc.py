@@ -36,7 +36,9 @@ EPD_HEIGHT = 300
 
 
 class EPD:
+
     def __init__(self):
+        #done
         self.reset_pin = epdconfig.RST_PIN
         self.dc_pin = epdconfig.DC_PIN
         self.busy_pin = epdconfig.BUSY_PIN
@@ -46,6 +48,7 @@ class EPD:
 
     # Hardware reset
     def reset(self):
+        #done
         epdconfig.digital_write(self.reset_pin, 1)
         epdconfig.delay_ms(200)
         epdconfig.digital_write(self.reset_pin, 0)
@@ -54,23 +57,27 @@ class EPD:
         epdconfig.delay_ms(200)
 
     def send_command(self, command):
+        #done
         epdconfig.digital_write(self.dc_pin, 0)
         epdconfig.digital_write(self.cs_pin, 0)
         epdconfig.spi_writebyte([command])
         epdconfig.digital_write(self.cs_pin, 1)
 
     def send_data(self, data):
+        #done
         epdconfig.digital_write(self.dc_pin, 1)
         epdconfig.digital_write(self.cs_pin, 0)
         epdconfig.spi_writebyte([data])
         epdconfig.digital_write(self.cs_pin, 1)
 
     def ReadBusy(self):
+        #done
         logging.debug("e-Paper busy")
         while (epdconfig.digital_read(self.busy_pin) == 1):  # 0: idle, 1: busy
             epdconfig.delay_ms(100)
 
     def init(self):
+        #done
         if (epdconfig.module_init() != 0):
             return -1
 
@@ -119,7 +126,7 @@ class EPD:
         self.send_data(0X80)
 
         self.send_command(0x22)
-        self.send_data(0XB1);  #Load Temperature and waveform setting.
+        self.send_data(0XB1)  #Load Temperature and waveform setting.
 
         self.send_command(0x20)
         self.ReadBusy()    #waiting for the electronic paper IC to release the idle signal
