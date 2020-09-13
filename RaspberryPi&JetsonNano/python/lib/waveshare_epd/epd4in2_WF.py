@@ -194,8 +194,10 @@ class EPD:
         self.send_data(0x39)
 
         self.send_command(0x61)  # TCON_RESOLUTION set x and y
+        # self.send_data(0x01)
+        # self.send_data(0x90)
         self.send_data(0x01)
-        self.send_data(0x90) # 128
+        self.send_data(0x2c)
         self.send_data(0x01)
         self.send_data(0x2c)
 
