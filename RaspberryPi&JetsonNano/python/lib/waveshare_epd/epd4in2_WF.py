@@ -198,6 +198,7 @@ class EPD:
         # self.send_data(0x90)
         self.send_data(0x01)
         self.send_data(0x2c)
+        self.send_data(0x00)
         self.send_data(0x01)
         self.send_data(0x2c)
 
