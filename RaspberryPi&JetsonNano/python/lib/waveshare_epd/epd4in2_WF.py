@@ -170,6 +170,10 @@ class EPD:
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(0xFF)
 
+        self.send_command(0x13)
+        for i in range(0, int(self.width * self.height / 8)):
+            self.send_data(0xFF)
+
         self.send_command(0x12)  # DISPLAY_REFRESH
         self.ReadBusy()
 
