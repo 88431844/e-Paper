@@ -125,7 +125,7 @@ class EPD:
         self.send_data(0x39)
 
         self.send_command(0x61)  # TCON_RESOLUTION set x and y
-        self.send_data(0xFF)  # RAM x address end at 31h(49+1)*8->400
+        self.send_data(0x31)  # RAM x address end at 31h(49+1)*8->400
         self.send_data(0x00)
         self.send_data(0xFF)  # RAM y address start at 12Bh
 
@@ -155,20 +155,9 @@ class EPD:
         return buf
 
     def display(self, blackimage):
-        # send black data
-        if (blackimage != None):
-            self.send_command(0x10)  # DATA_START_TRANSMISSION_1
-            for i in range(0, int(self.width * self.height / 8)):
-                temp = 0x00
-                for bit in range(0, 4):
-                    if (blackimage[i] & (0x80 >> bit) != 0):
-                        temp |= 0xC0 >> (bit * 2)
-                self.send_data(temp)
-                temp = 0x00
-                for bit in range(4, 8):
-                    if (blackimage[i] & (0x80 >> bit) != 0):
-                        temp |= 0xC0 >> ((bit - 4) * 2)
-                self.send_data(temp)
+        self.send_command(0x10)
+        for i in range(0, int(self.width * self.height / 8)):
+            self.send_data(blackimage[i])
 
         self.send_command(0x12)  # DISPLAY_REFRESH
         self.ReadBusy()
@@ -176,11 +165,6 @@ class EPD:
 
     def Clear(self):
         self.send_command(0x10)  # DATA_START_TRANSMISSION_1
-        for i in range(0, int(self.width * self.height / 8)):
-            self.send_data(0xFF)
-            self.send_data(0xFF)
-
-        self.send_command(0x13)  # DATA_START_TRANSMISSION_2
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(0xFF)
 
