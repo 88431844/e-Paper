@@ -148,23 +148,23 @@ class EPD:
         #     self.send_data(self.lut_g2[count])
 
         self.send_command(0x20)  # vcom
-        for count in range(0, 44):
+        for count in range(0, 15):
             self.send_data(self.lut_vcom0[count])
 
         self.send_command(0x21)  # ww --
-        for count in range(0, 42):
+        for count in range(0, 15):
             self.send_data(self.lut_ww[count])
 
         self.send_command(0x22)  # bw r
-        for count in range(0, 42):
+        for count in range(0, 15):
             self.send_data(self.lut_bw[count])
 
         self.send_command(0x23)  # wb w
-        for count in range(0, 42):
+        for count in range(0, 15):
             self.send_data(self.lut_bb[count])
 
         self.send_command(0x24)  # bb b
-        for count in range(0, 42):
+        for count in range(0, 15):
             self.send_data(self.lut_wb[count])
 
     def init(self):
