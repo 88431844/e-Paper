@@ -107,68 +107,23 @@ class EPD:
         self.send_data(0x0E)
         # EPD hardware init end
         return 0
-        
-    def Init_4Gray(self):
-        if (epdconfig.module_init() != 0):
-            return -1
-        # EPD hardware init start
-        self.reset()
-        
-        self.send_command(0x01)			#POWER SETTING
-        self.send_data (0x03)
-        self.send_data (0x00)       #VGH=20V,VGL=-20V
-        self.send_data (0x2b)		#VDH=15V															 
-        self.send_data (0x2b)		#VDL=-15V
-        self.send_data (0x13)
-
-        self.send_command(0x06)         #booster soft start
-        self.send_data (0x17)		#A
-        self.send_data (0x17)		#B
-        self.send_data (0x17)		#C 
-
-        self.send_command(0x04)
-        self.ReadBusy()
-
-        self.send_command(0x00)			#panel setting
-        self.send_data(0x3f)		#KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
-
-        self.send_command(0x30)			#PLL setting
-        self.send_data (0x3c)      	#100hz 
-
-        self.send_command(0x61)			#resolution setting
-        self.send_data (0x01)		#400
-        self.send_data (0x90)     	 
-        self.send_data (0x01)		#300
-        self.send_data (0x2c)
-
-        self.send_command(0x82)			#vcom_DC setting
-        self.send_data (0x12)
-
-        self.send_command(0X50)			#VCOM AND DATA INTERVAL SETTING			
-        self.send_data(0x97)
 
     def getbuffer(self, image):
-        # logging.debug("bufsiz = ",int(self.width/8) * self.height)
-        buf = [0xFF] * (int(self.width/8) * self.height)
+        buf = [0xFF] * int(self.width * self.height / 8)
+        # Set buffer to value of Python Imaging Library image.
+        # Image must be in mode 1.
         image_monocolor = image.convert('1')
         imwidth, imheight = image_monocolor.size
+        if imwidth != self.width or imheight != self.height:
+            raise ValueError('Image must be same dimensions as display \
+                ({0}x{1}).' .format(self.width, self.height))
+
         pixels = image_monocolor.load()
-        # logging.debug("imwidth = %d, imheight = %d",imwidth,imheight)
-        if(imwidth == self.width and imheight == self.height):
-            logging.debug("Horizontal")
-            for y in range(imheight):
-                for x in range(imwidth):
-                    # Set the bits for the column of pixels at the current position.
-                    if pixels[x, y] == 0:
-                        buf[int((x + y * self.width) / 8)] &= ~(0x80 >> (x % 8))
-        elif(imwidth == self.height and imheight == self.width):
-            logging.debug("Vertical")
-            for y in range(imheight):
-                for x in range(imwidth):
-                    newx = y
-                    newy = self.height - x - 1
-                    if pixels[x, y] == 0:
-                        buf[int((newx + newy*self.width) / 8)] &= ~(0x80 >> (y % 8))
+        for y in range(self.height):
+            for x in range(self.width):
+                # Set the bits for the column of pixels at the current position.
+                if pixels[x, y] == 0:
+                    buf[int((x + y * self.width) / 8)] &= ~(0x80 >> (x % 8))
         return buf
 
     def display(self, blackimage):
@@ -192,15 +147,16 @@ class EPD:
 
 
     def Clear(self):
-        self.send_command(0x10)
+        self.send_command(0x10)  # DATA_START_TRANSMISSION_1
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(0xFF)
-            
-        self.send_command(0x13)
+            self.send_data(0xFF)
+
+        self.send_command(0x13)  # DATA_START_TRANSMISSION_2
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(0xFF)
-            
-        self.send_command(0x12) 
+
+        self.send_command(0x12)  # DISPLAY_REFRESH
         self.ReadBusy()
 
     def sleep(self):
