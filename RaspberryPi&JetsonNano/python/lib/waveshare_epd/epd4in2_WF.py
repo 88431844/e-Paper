@@ -126,10 +126,9 @@ class EPD:
 
         self.send_command(0x61)  # TCON_RESOLUTION set x and y
         self.send_data(0x01)
-        self.send_data(0x90)  # 128
-        self.send_data(0x00)
+        self.send_data(0x90) # 128
         self.send_data(0x01)
-        self.send_data(0x2B)  # RAM y address start at 12Bh
+        self.send_data(0x2c)
 
 
         self.send_command(0x82)  # VCM_DC_SETTING_REGISTER
