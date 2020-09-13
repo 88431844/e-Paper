@@ -98,11 +98,12 @@ class EPD:
         self.send_data(0x17)
         self.send_command(0x30)  # PLL_CONTROL
         self.send_data(0x39)
+
         self.send_command(0x61)  # TCON_RESOLUTION set x and y
-        self.send_data(0x31)  # RAM x address end at 31h(49+1)*8->400
+        self.send_data(0xC8)  # RAM x address end at 31h(49+1)*8->400
         self.send_data(0x00)
-        self.send_data(0x2B)  # RAM y address start at 12Bh
-        self.send_data(0x01)
+        self.send_data(0xC8)  # RAM y address start at 12Bh
+
         self.send_command(0x82)  # VCM_DC_SETTING_REGISTER
         self.send_data(0x0E)
         # EPD hardware init end
